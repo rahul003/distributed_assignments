@@ -1,0 +1,22 @@
+Causal broadcast is nothing bt causal delivery implemented at any process
+
+Causal delivery is nothing but imlementing the delivery rule DR3
+	deliver a message m  from process p_j as soon as both the conditions are satisfied:
+		D[j] = TS(m)[j]-1
+		D[k] >= TS(m)[k], for all k notequal to j
+	when p0 delivers m, array D is updated by setting D[j] to TS(m)[j].
+	p0 maintains an array of counters D[1...n] of counters initially all zeros, st D[i] contains TS(m_i)[i] where m_i is the last message that has been delivered from process p_i.
+
+
+p0 wants to send causal broadcast
+
+
+	ports.txt is as follows;
+a row is list of outgoing ports for that rows process.
+so if a process p0 has to send to p1, it queries for ports[0][1]
+
+51230,51231,51232,51233,51234
+51240,51241,51242,51243,51244
+51220,51221,51222,51223,51224
+51200,51201,51202,51203,51204
+51210,51211,51212,51213,51214

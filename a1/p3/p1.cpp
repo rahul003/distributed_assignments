@@ -3,7 +3,6 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
-#include <signal.h>
 
 #include <sys/types.h> 
 #include <sys/socket.h>
@@ -17,19 +16,27 @@
 #include <sstream>
 #include <vector>
 
-#include "process.h"
+#include "headers/process.h"
 using namespace std;
 
 int main(int argc, char *argv[])
 {
-    signal(SIGINT, my_handler);
 
     loadPorts();
-    Process p1(1);
-    boost::thread workerThread1(receive, &p1);
-    sleep(5);
-    // int i =1;
+    int id = 1;
+    Process p1(id);
+    string init = "Started process";
+    p1.addToLog(init);
+    //need all listening ports for p0: ports[i][id] for all i
+     boost::thread_group workers;
+    for (int i=0; i<ports.size();i++)
+    {
+        workers.add_thread(new boost::thread(receive, &p1, ports[i][id]));
+    }
+    // boost::thread workerThread0(receive, &p1);
+    sleep(3);
+    // int i=1;
     p1.sendBroadcast(1);
-    workerThread1.join();
+    workers.join_all();
     return 0; 
 }
