@@ -1,12 +1,6 @@
+Time: 3
+P3->P4 p_3:1
+
 Time: 4
-P3 REC p_1:1 with VC 1.1.0.0.0
-
-Time: 5
-P3 REC p_1:2 with VC 1.2.0.0.0
-
-Time: 6
-P3 REC p_0:1
-P3 DLR p_0:1 new VC 1.0.0.0.0
-P3 DLR p_1:1 new VC 1.1.0.0.0
-P3 DLR p_1:2 new VC 1.2.0.0.0
+P3->P4 p_3:2
 

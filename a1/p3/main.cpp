@@ -3,8 +3,8 @@ int main(int argc, char *argv[])
 {
     loadPorts();
 
-    int id = 3;
-    string commtype = "Unicast";
+    int id = atoi(argv[2]);
+    string commtype = argv[1];
     Process p(id, commtype);
 
     boost::thread_group workers;
@@ -14,10 +14,11 @@ int main(int argc, char *argv[])
     }
     workers.add_thread(new boost::thread(write_log, &p));
     workers.add_thread(new boost::thread(psuedoreceive_manager, &p));
+    
     sleep(2);
+
     int messagecounter = 1;
 
-    //case
     if(commtype=="Broadcast")
     {
         map<int, vector<int> > bc_all = loadBc();
@@ -33,7 +34,6 @@ int main(int argc, char *argv[])
             {
                 p.sendBroadcast(messagecounter);
                 messagecounter++;
-                cout<<"Sending at "<<cur<<endl;
                 my_time.erase(my_time.begin());
             }
             
@@ -60,9 +60,8 @@ int main(int argc, char *argv[])
             {
                 for (vector<int>::iterator iter = it->second.begin();iter!=it->second.end();++iter)
                 {
-
-                    cout<<"to send to "<<*iter<<" at "<<cur<<endl;
                     p.sendUnicast(*iter, messagecounter);
+                    messagecounter++;
                 }
                 uc.erase (it);
             }
@@ -72,6 +71,8 @@ int main(int argc, char *argv[])
             }
         }
     }
+
+    cout<<"Process "<<id<<" has finished sending messages as in config file."<<endl;
     workers.join_all();
     return 0; 
 }

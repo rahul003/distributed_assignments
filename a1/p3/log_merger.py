@@ -1,10 +1,11 @@
 import os
 import prettytable
 from prettytable import PrettyTable
+import sys
 
 timeoffset = 2
 
-
+mode = str(sys.argv[1])
 num_process = 0
 dirpath = os.path.join(os.getcwd(),"logs/")
 fullog = {}
@@ -65,5 +66,5 @@ for key in sorted(fullog):
 			row.append(' - ')
 	t.add_row(row)
 
-with open(os.path.join(os.getcwd(), 'merged.log'), 'w') as ofile:
+with open(os.path.join(os.getcwd(), 'merged_'+mode+'.log'), 'w') as ofile:
 	ofile.write(t.get_string())

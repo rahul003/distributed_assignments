@@ -1,0 +1,9 @@
+changes
+
+vector clock - based on initialization param?
+
+loadUc()
+	when message sending. change a bit
+
+
+check line 290 process.cpp

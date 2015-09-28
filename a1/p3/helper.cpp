@@ -77,7 +77,7 @@ string getMessageVC_str(string s)
 
 void loadPorts()
 {
-    string filepath = "/home/rahul/git/distributed/a1/p3/text/ports.txt";
+    string filepath = "config/ports.txt";
     int numrows = 0;
     int numcols = 0;
     string portlinet;
@@ -133,11 +133,19 @@ void loadPorts()
 }
 
 
-vector<vector<int> > loadDelay()
+vector<vector<int> > loadDelay(string commtype)
 {
     vector<vector <int> > delay;
-
-    string filepath = "/home/rahul/git/distributed/a1/p3/text/delay.txt";
+    string filepath;
+    if (commtype == "Broadcast")
+    {
+        filepath = "config/delay_bc.txt";
+    }
+    else
+    {
+        filepath = "config/delay_uc.txt";  
+    }
+        
     int numrows = 0;
     int numcols = 0;
     string t;
@@ -284,16 +292,16 @@ map<int, vector<int> > loadUc(int senderid)
         }
         uc_data.close();
 
-        map<int, vector<int> >::iterator iter;
-        for(iter = uc_one.begin(); iter != uc_one.end(); iter++) 
-        {
-            cout<<iter->first<<": ";
-            for(vector<int>::iterator it = iter->second.begin(); it != iter->second.end(); ++it) 
-            {
-                cout<<(*it)<<",";
-            }
-            cout<<endl;
-        }
+        // map<int, vector<int> >::iterator iter;
+        // for(iter = uc_one.begin(); iter != uc_one.end(); iter++) 
+        // {
+        //     cout<<iter->first<<": ";
+        //     for(vector<int>::iterator it = iter->second.begin(); it != iter->second.end(); ++it) 
+        //     {
+        //         cout<<(*it)<<",";
+        //     }
+        //     cout<<endl;
+        // }
 
       }
 
@@ -312,7 +320,7 @@ vector< vector<int> > getVectorClock_matrix(string tclock)
     for(int i=0;i<ports.size();i++)
     {
         vector<int> inside;
-        for(int j=0;ports.size(); j++)
+        for(int j=0;j<ports.size(); j++)
         {
             string val = tokens[(i*ports.size())+j];
             inside.push_back(atoi(val.c_str()));

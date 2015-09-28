@@ -21,7 +21,6 @@
 #include <fstream>
 #include <vector>
 
-
 using namespace std;
 //common
 void error(char *);
@@ -32,7 +31,7 @@ std::vector<std::string> split(const std::string &s, char delim) ;
 int getSender(string );
 int getMessageNum(string );
 void loadPorts();
-vector<vector<int> > loadDelay();
+vector<vector<int> > loadDelay(string);
 string getMessageVC_str(string );
 
 //bc

@@ -7,4 +7,6 @@ fuser 51230/tcp 51231/tcp 51232/tcp 51240/tcp 51241/tcp 51242/tcp 51220/tcp 5122
 
 lsof -P -n| grep "bin/p1"
 
+lsof -P -n| grep "bin/p4" & lsof -P -n| grep "bin/p3" & lsof -P -n| grep "bin/p2" & lsof -P -n| grep "bin/p1" &lsof -P -n| grep "bin/p0" 
+
 -p -n prevent name resolution. so fast

@@ -4,7 +4,7 @@ vector< vector<int> > ports;
 
 Process::Process(int id, string type)
 {   
-    delay = loadDelay();
+    delay = loadDelay(type);
     t_start = time(0);
     myid = id;
     commtype = type;
@@ -16,12 +16,12 @@ Process::Process(int id, string type)
             D.push_back(0);
         }
     }
-    else
+    if(commtype=="Unicast")
     {
         for(int i=0;i<ports.size();i++)
         {
             vector<int> inside;
-            for(int j=0;ports.size(); j++)
+            for(int j=0;j<ports.size(); j++)
             {
                 inside.push_back(0);
             }
@@ -114,7 +114,7 @@ void receive(Process* parent, int portno)
 
      // string tolog = ;
      // tolog+=iToString(portno);
-
+     //cout<<"started listening "<<endl;
      while(1)
         {
              // cout<<"Receiving starts on "<<portno<<endl;
@@ -122,13 +122,16 @@ void receive(Process* parent, int portno)
 
              if (newsockfd < 0) 
                   error("ERROR on accept");
+
              bzero(buffer,256);
              n = read(newsockfd,buffer,255);
              if (n < 0) error("ERROR reading from socket");
              
              string buffer_data(buffer);
              vector<string> tokens = split(buffer_data, ',');
-
+             
+             // cout<<"data : "<<buffer_data<<endl;
+             
              int senderid = atoi(tokens[0].c_str());
              int receiverid = parent->getId();
              double send_timestamp = atof(tokens[3].c_str());
@@ -157,6 +160,18 @@ void receive(Process* parent, int portno)
     return;
 }
 
+string Process::getRec_str()
+{
+    string s = string();
+    for(int i=0;i<ports[0].size();i++)
+    {
+        if (i)
+             {s += ".";}
+        string vec_time_str = iToString(rec[i]);
+        s += vec_time_str;  
+    }
+    return s;
+}
 
 string Process::getVectorClock_str()
 {   
@@ -177,7 +192,7 @@ string Process::getVectorClock_str()
     {
         for(int i=0;i<ports.size();i++)
         {
-            for(int j=0;ports.size(); j++)
+            for(int j=0;j<ports.size(); j++)
             {
                 if(i || j)
                 {
@@ -220,7 +235,6 @@ void Process::deliveryManager()
             string message = iter->second[x];
             int sender = getSender(message);
             int messagenum = getMessageNum(message);
-            
 
             if(commtype == "Broadcast")
             {
@@ -253,8 +267,8 @@ void Process::deliveryManager()
                     toLog += tokens[0];
                     toLog += ":";
                     toLog += tokens[1];
-                    toLog += " new VC ";
-                    toLog += getVectorClock_str();
+                    // toLog += " new VC ";
+                    // toLog += getVectorClock_str();
                     double curtimeoff = difftime(time(0),getStartTime());
                     addToLog(curtimeoff, toLog);
                     // cout<<"delivered"<<endl;
@@ -269,16 +283,16 @@ void Process::deliveryManager()
             if(commtype == "Unicast")
             {
                 vector< vector<int> > ts = getVectorClock_matrix(getMessageVC_str(message));
-
+                // cout<<"in delivery manager"<<endl;
                 if((rec[sender]==ts[sender][myid]-1))
                 {
                     bool deliver = true;
-
+                    // cout<<"in first condition"<<endl;
                     for(int k=0; k<ports.size(); k++)
                     {
                         if (k==sender)
                             continue;
-                        if(!(rec[k]>=ts[x][myid]))
+                        if(!(rec[k]>=ts[k][myid]))
                         {
                             deliver = false;
                             break;
@@ -286,6 +300,7 @@ void Process::deliveryManager()
                     }
                     if (deliver)
                     {
+                        // cout<<"delivering"<<endl;
                         //deliver. update log
                     rec[sender] = ts[sender][myid];
                     updateVectorClock_receive(getMessageVC_str(message));
@@ -298,6 +313,8 @@ void Process::deliveryManager()
                     toLog += tokens[0];
                     toLog += ":";
                     toLog += tokens[1];
+                    // toLog += "; recvec: ";
+                    // toLog += getRec_str();
                     // toLog += " new VC ";
                     // toLog += getVectorClock_str();
                     double curtimeoff = difftime(time(0),getStartTime());
@@ -336,7 +353,7 @@ void Process::updateVectorClock_receive(string str_ts_recmsg)
 
         for(int i=0;i<ports.size();i++)
         {
-            for(int j=0;ports.size(); j++)
+            for(int j=0;j<ports.size(); j++)
             {
                 if(msg_sent[i][j]>sent[i][j])
                 {
@@ -361,16 +378,16 @@ void Process::sendBroadcast(int msg)
     tmp += ",";
     tmp += iToString(msg);
 
-    string logstring = "p";
+    string logstring = "P";
     logstring += iToString(getId());
     logstring += " BRC p_";
     logstring += iToString(getId());
     logstring += ":";
     logstring += iToString(msg);
-    logstring += " with VC ";
+    // logstring += " with VC ";
 
     updateVectorClock_sendBc();
-    logstring += getVectorClock_str();
+    // logstring += getVectorClock_str();
     double timedifference = difftime(time(0) ,getStartTime());
     addToLog(timedifference, logstring);
     
@@ -433,7 +450,7 @@ void Process::sendUnicast(int dest, int msg)
     struct hostent *server;
 
     char buffer[256];
-
+ 
     string tmp = iToString(getId());
     tmp += ",";
     tmp += iToString(msg);
@@ -487,14 +504,14 @@ void Process::sendUnicast(int dest, int msg)
     toSend += ",";
     
     toSend += doubleToString(timedifference);
-    // cout<<"sending "<<toSend<<"to "<<*it<<endl;
+    // cout<<"sending "<<toSend<<"to "<<dest<<endl;
 
     strcpy(buffer, toSend.c_str());
     n = write(sockfd,buffer,strlen(buffer));
     if (n < 0) 
          error("ERROR writing to socket");
     
-     
+    // cout<<"sent successfully"<<endl;
     return;
 }
 

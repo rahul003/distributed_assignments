@@ -62,6 +62,7 @@ class Process{
         //done. separate
         void sendUnicast(int, int);
         void updateVectorClock_sendUc(int);
+        string getRec_str();
 
     private:
         int myid;

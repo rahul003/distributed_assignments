@@ -2,7 +2,7 @@
 
 void write_log(Process* parent)
 {
-    string filepath = "/home/rahul/git/distributed/a1/p3/logs/log_";
+    string filepath = "logs/log_";
     filepath += iToString(parent->getId());
     
     while(1)
