@@ -1,0 +1,14 @@
+Time: 3
+P1 REC p_0:1 with VC 1.0.0.0.0
+P1 DLR p_0:1 new VC 1.0.0.0.0
+
+Time: 4
+p1 BRC p_1:1 with VC 1.1.0.0.0
+P1 REC p_1:1 with VC 1.1.0.0.0
+P1 DLR p_1:1 new VC 1.1.0.0.0
+
+Time: 5
+p1 BRC p_1:2 with VC 1.2.0.0.0
+P1 REC p_1:2 with VC 1.2.0.0.0
+P1 DLR p_1:2 new VC 1.2.0.0.0
+

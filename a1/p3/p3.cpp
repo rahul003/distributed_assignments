@@ -3,7 +3,7 @@ int main(int argc, char *argv[])
 {
     loadPorts();
 
-    int id = 1;
+    int id = 3;
     string commtype = "Unicast";
     Process p(id, commtype);
 
